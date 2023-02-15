@@ -53,3 +53,9 @@ if ($duplicates.Count -gt 0) {
     Write-Host "No duplicates found."
 }
 ```
+
+### One Liner PowerShell Command
+
+```
+$dir = (Get-Location).Path; $files = Get-ChildItem -Path $dir -Filter *.json; $hashes = @{}; $duplicates = @(); foreach ($file in $files) { $json = Get-Content $file.FullName | ConvertFrom-Json; $attributes = $json.attributes | ConvertTo-Json -Compress; $hash = Get-FileHash $file.FullName -Algorithm MD5; if ($hashes.ContainsKey($hash.Hash)) { $duplicates += $file.FullName } else { $hashes.Add($hash.Hash, $attributes) } }; if ($duplicates.Count -gt 0) { Write-Host "Duplicates found:"; $duplicates | ForEach-Object { Write-Host "  $_" } } else { Write-Host "No duplicates found." }
+```
