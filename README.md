@@ -32,7 +32,7 @@ THis will merge the CIDs with the name feild in the array of CiDs
 (Get-Content -Raw ./file2_updated.json | ConvertFrom-Json) | Sort-Object {[regex]::Replace($_.name, '\d+', { $args[0].Value.PadLeft(20) })} | ConvertTo-Json -Depth 100 | Set-Content ./sorted_file.json
 ```
 
-
+This will sort metadata in natural order 1,2,3,4,5,6,7,8,9,10 etc
 
 ## Add filename to CID URL in json file
 ```
