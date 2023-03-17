@@ -18,14 +18,25 @@ Here's how it works:
 * This should output the concatenated JSON objects with only the name and cid attributes and values for each entry in the input JSON file, written one after the other into the output file.
 
 ---
-
+## Add the filename to the CID URl
 
 ```
 (Get-Content "CIDs.json" -Raw | ConvertFrom-Json) | ForEach-Object { $_.cid += "/$($_.name)"; $_ } | ConvertTo-Json | Set-Content "output.json"
 ```
 THis will merge the CIDs with the name feild in the array of CiDs
 
+Here's how this PowerShell code works:
 
+* Get-Content "CIDs.json" -Raw reads the contents of the "CIDs.json" file as a single string.
+* ConvertFrom-Json converts the string into a PowerShell object.
+* ForEach-Object loops through each object in the PowerShell object.
+* $_ is a reference to the current object being processed in the loop.
+* $_.cid += "/$($_.name)" appends the value of the "name" property to the "cid" property, separated by a forward slash (/).
+* $_ returns the modified object to the pipeline for further processing.
+* ConvertTo-Json converts the PowerShell object back into a JSON string.
+* Set-Content "output.json" writes the JSON string to a file named "output.json".
+
+In summary, this code takes a JSON file with a "cid" property and a "name" property and modifies each object by appending the "name" property to the "cid" property, separated by a forward slash. The modified objects are then written to a new JSON file.
 
 ## Sort Metadata in natural order
 ```
@@ -38,6 +49,19 @@ This will sort metadata in natural order 1,2,3,4,5,6,7,8,9,10 etc
 ```
 (Get-Content "input.json" -Raw | ConvertFrom-Json) | ForEach-Object { $_.cid += "/$($_.name)"; $_ } | ConvertTo-Json | Set-Content "output.json"
 ```
+
+This PowerShell code takes a JSON file named "input.json" as input and performs the following operations:
+
+* `Get-Content "input.json" -Raw` reads the contents of the "input.json" file as a single string.
+* `ConvertFrom-Json` converts the string into a PowerShell object.
+* `ForEach-Object` loops through each object in the PowerShell object.
+* `$_` is a reference to the current object being processed in the loop.
+* `$_.cid += "/$($_.name)"` appends the value of the "name" property to the "cid" property, separated by a forward slash (/).
+* `$_` returns the modified object to the pipeline for further processing.
+* `ConvertTo-Json` converts the PowerShell object back into a JSON string.
+* `Set-Content "output.json"` writes the JSON string to a file named "output.json".
+
+In summary, this code appends the "name" property to the "cid" property of each object in the input JSON file and writes the modified objects to a new JSON file named "output.json". This can be useful when you want to include the filename as part of the CID URL.
 
 
 ## Using Regex to replace the cid with animation_url for glbs
