@@ -126,3 +126,48 @@ $file2Content | ConvertTo-Json -Depth 100 | Set-Content $outputPath
 
 `.\replaceURls.ps1`
 
+---
+## Convert JSON to Zora CSV
+```
+$json = Get-Content -Path .\input.json -Raw | ConvertFrom-Json
+
+# Build header row by collecting all unique attribute names
+$header = @('name', 'created_by', 'external_url', 'description', 'vrm_url', 'animation_url', 'image')
+$json | ForEach-Object {
+    $_.attributes | ForEach-Object {
+        $attributeName = $_.trait_type
+        if ($header -notcontains "attributes[$attributeName]") {
+            $header += "attributes[$attributeName]"
+        }
+    }
+    # Add 'Special' trait type to header if it doesn't exist
+    if ($header -notcontains "attributes[Special]") {
+        $header += "attributes[Special]"
+    }
+}
+
+$output = @()
+$json | ForEach-Object {
+    $row = [ordered]@{}
+    $row['name'] = $_.name
+    $row['created_by'] = $_.created_by
+    $row['external_url'] = $_.external_url
+    $row['description'] = $_.description
+    $row['vrm_url'] = $_.vrm_url
+    $row['animation_url'] = $_.animation_url
+    $row['image'] = $_.image
+
+    $_.attributes | ForEach-Object {
+        $row."attributes[$($_.trait_type)]" = $_.value
+    }
+    # Add 'Special' trait type to row even if it's empty
+    if (-not $row.'attributes[Special]') {
+        $row.'attributes[Special]' = ""
+    }
+
+    $output += New-Object PSObject -Property $row
+}
+
+$output | Export-Csv -Path .\output.csv -NoTypeInformation -Delimiter ','
+
+```
