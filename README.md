@@ -171,3 +171,32 @@ $json | ForEach-Object {
 $output | Export-Csv -Path .\output.csv -NoTypeInformation -Delimiter ','
 
 ```
+
+Adding the 3 URLS to the description
+
+```
+# Read the input JSON file
+$input_data = Get-Content -Path "final_updated_metadata.json" -Raw | ConvertFrom-Json
+
+$output_data = @()
+
+# Iterate over each entry and modify it
+foreach ($entry in $input_data) {
+    # Extract the URLs
+    $vrm_url = $entry.vrm_url
+    $animation_url = $entry.animation_url
+    $image_url = $entry.image
+    
+    # Create a formatted string with the URLs
+    $urls_str = "Image: $image_url Animation URL: $animation_url VRM URL: $vrm_url"
+    
+    # Add the formatted string to the description
+    $entry.description += " $urls_str"
+    
+    # Add the modified entry to the output data
+    $output_data += $entry
+}
+
+# Write the modified data to a new JSON file
+$output_data | ConvertTo-Json -Depth 4 | Out-File "your_output_file.json"
+```
