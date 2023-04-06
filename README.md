@@ -132,7 +132,7 @@ $file2Content | ConvertTo-Json -Depth 100 | Set-Content $outputPath
 $json = Get-Content -Path .\final_metadata.json -Raw | ConvertFrom-Json
 
 # Build header row by collecting all unique attribute names
-$header = @('name', 'created_by', 'external_url', 'description', 'vrm_url', 'animation_url', 'image')
+$header = @('name', 'created_by', 'external_url', 'description', 'vrm_url', 'animation_url', 'image', 'background_color')
 $json | ForEach-Object {
     $_.attributes | ForEach-Object {
         $attributeName = $_.trait_type
@@ -161,6 +161,7 @@ $json | ForEach-Object {
     $row['vrm_url'] = $_.vrm_url
     $row['animation_url'] = $_.animation_url
     $row['image'] = $_.image
+    $row['background_color'] = $_.background_color
 
     $_.attributes | ForEach-Object {
         $row."attributes[$($_.trait_type)]" = $_.value
@@ -179,6 +180,8 @@ $json | ForEach-Object {
 }
 
 $output | Export-Csv -Path .\output.csv -NoTypeInformation -Delimiter ','
+
+
 
 
 ```
