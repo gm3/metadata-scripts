@@ -129,7 +129,7 @@ $file2Content | ConvertTo-Json -Depth 100 | Set-Content $outputPath
 ---
 ## Convert JSON to Zora CSV
 ```
-$json = Get-Content -Path .\input.json -Raw | ConvertFrom-Json
+$json = Get-Content -Path .\final_metadata.json -Raw | ConvertFrom-Json
 
 # Build header row by collecting all unique attribute names
 $header = @('name', 'created_by', 'external_url', 'description', 'vrm_url', 'animation_url', 'image')
@@ -143,6 +143,11 @@ $json | ForEach-Object {
     # Add 'Special' trait type to header if it doesn't exist
     if ($header -notcontains "attributes[Special]") {
         $header += "attributes[Special]"
+    }
+
+    # Add 'Back' trait type to header if it doesn't exist
+    if ($header -notcontains "attributes[Back]") {
+        $header += "attributes[Back]"
     }
 }
 
@@ -165,10 +170,16 @@ $json | ForEach-Object {
         $row.'attributes[Special]' = ""
     }
 
+    # Add 'Back' trait type to row even if it's empty
+    if (-not $row.'attributes[Back]') {
+        $row.'attributes[Back]' = ""
+    }
+
     $output += New-Object PSObject -Property $row
 }
 
 $output | Export-Csv -Path .\output.csv -NoTypeInformation -Delimiter ','
+
 
 ```
 
